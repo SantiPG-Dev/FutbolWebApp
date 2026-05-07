@@ -146,7 +146,7 @@ Object oWebApp is a cWebApp
                 Move (hoTop=0 or hoTop=hoDflt) to bTop
                 
                 WebSet pbRender of oBackButton to (not(bTop) and eMode >= rmMobile)
-                WebSet pbRender of oMenuButton to (bTop or eMode < rmMobile)
+                WebSet pbRender of oMenuButton to True
             End_Procedure
 
         End_Object
