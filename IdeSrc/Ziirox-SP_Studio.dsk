@@ -18,13 +18,24 @@ Right=1049
 TabIndex=0
 TabGroup=0
 [Window1]
+Filename=C:\DataFlex Projects\FutbolWebApp\AppSrc\Dashboard.wo
+ViewType=1
+Top=21
+Left=0
+Bottom=730
+Right=1049
+CursorLine=0
+CursorColumn=0
+TabIndex=2
+TabGroup=0
+[Window2]
 Filename=C:\DataFlex Projects\FutbolWebApp\AppSrc\WebApp.src
 ViewType=1
 Top=21
 Left=0
 Bottom=730
 Right=1049
-CursorLine=162
-CursorColumn=0
+CursorLine=11
+CursorColumn=33
 TabIndex=1
 TabGroup=0

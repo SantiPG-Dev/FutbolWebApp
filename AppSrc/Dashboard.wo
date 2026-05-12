@@ -1,4 +1,4 @@
-Use cWebView.pkg
+﻿Use cWebView.pkg
 Use cWebPanel.pkg
 Use cWebForm.pkg
 Use cWebButton.pkg
@@ -27,7 +27,7 @@ Object oDashboard is a cWebView
     // constraints in the next view that we navigate to.
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-    Set piMaxWidth to 1024
+    Set piMaxWidth to 1200
     
     Set psCaption to "Dashboard"
     Set peViewType to vtUndefined
@@ -41,22 +41,22 @@ Object oDashboard is a cWebView
         // Main Panel's Responsive Rules
         // - - - - - - - - - - - - - - -
         WebSetResponsive piColumnCount rmMobile to 1
-        WebSetResponsive piColumnCount rmTabletPortrait to 16
+        WebSetResponsive piColumnCount rmTabletPortrait to 24
     
         Object oTiles_grp is a cWebGroup
             Set piColumnSpan to 8
             Set pbShowBorder to False
             Set pbShowCaption to False
-            Set piColumnCount to 12
+            Set piColumnCount to 24
             
             Set psCSSClass to "TilesGroup"
     
             Object oTileEntrenador is a cWebHtmlBox
                 Set pbServerOnClick to True
-                Set piColumnSpan to 4
+                Set piColumnSpan to 8
                 Set piColumnIndex to 0
                 Set psCSSClass to "Tile LightAlternate"
-                Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div Class="Tile_Title">Entrenadores</div><div class="Tile_Subtitle">Abrir listado</div></div>'
+                Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div class="Tile_Title">Entrenadores</div><div class="Tile_Subtitle">Abrir listado</div></div>'
                                 
                 WebRegisterPath ntNavigateForwardCustom oSelectEntrenador
                 
@@ -68,10 +68,10 @@ Object oDashboard is a cWebView
     
             Object oTileJugador is a cWebHtmlBox
                 Set pbServerOnClick to True
-                Set piColumnSpan to 4
-                Set piColumnIndex to 4
+                Set piColumnSpan to 8
+                Set piColumnIndex to 8
                 Set psCSSClass to "Tile Dark"
-                Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div Class="Tile_Title">Jugadores</div><div class="Tile_Subtitle">Abrir listado</div></div>'
+                Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div class="Tile_Title">Jugadores</div><div class="Tile_Subtitle">Abrir listado</div></div>'
     
                 WebRegisterPath ntNavigateForwardCustom oSelectJugador
                 
@@ -83,10 +83,10 @@ Object oDashboard is a cWebView
     
             Object oTilePosicion is a cWebHtmlBox
                 Set pbServerOnClick to True
-                Set piColumnSpan to 4
-                Set piColumnIndex to 8
+                Set piColumnSpan to 8
+                Set piColumnIndex to 16
                 Set psCSSClass to "Tile DarkAlternate"
-                Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div Class="Tile_Title">Posiciones</div><div class="Tile_Subtitle">Abrir listado</div></div>'
+                Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div class="Tile_Title">Posiciones</div><div class="Tile_Subtitle">Abrir listado</div></div>'
             
                 WebRegisterPath ntNavigateForwardCustom oSelectPosicion
                 
@@ -98,10 +98,10 @@ Object oDashboard is a cWebView
 
             Object oTileEquipo is a cWebHtmlBox
                 Set pbServerOnClick to True
-                Set piColumnSpan to 6
+                Set piColumnSpan to 12
                 Set piColumnIndex to 0
                 Set psCSSClass to "Tile Light"
-                Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div Class="Tile_Title">Equipos</div><div class="Tile_Subtitle">Abrir listado</div></div>'
+                Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div class="Tile_Title">Equipos</div><div class="Tile_Subtitle">Abrir listado</div></div>'
             
                 WebRegisterPath ntNavigateForwardCustom oSelectEquipo
                 
@@ -113,10 +113,10 @@ Object oDashboard is a cWebView
 
             Object oTileLiga is a cWebHtmlBox
                 Set pbServerOnClick to True
-                Set piColumnSpan to 6
-                Set piColumnIndex to 6
+                Set piColumnSpan to 12
+                Set piColumnIndex to 12
                 Set psCSSClass to "Tile LightAlternate"
-                Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div Class="Tile_Title">Ligas</div><div class="Tile_Subtitle">Abrir listado</div></div>'
+                Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div class="Tile_Title">Ligas</div><div class="Tile_Subtitle">Abrir listado</div></div>'
             
                 WebRegisterPath ntNavigateForwardCustom oSelectLiga
                 
