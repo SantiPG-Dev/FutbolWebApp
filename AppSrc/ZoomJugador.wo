@@ -7,7 +7,6 @@ Use cWebPanel.pkg
 Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebForm.pkg
-Use cWebLabel.pkg
 
 Use cligaDataDictionary.dd
 Use cequipoDataDictionary.dd
@@ -109,15 +108,6 @@ Object oZoomJugador is a cWebView
                 Send NavigatePath
             End_Procedure
         End_Object 
-
-        // Punto 4: Posición seleccionada (nfUndefined con NamedValues)
-        Object oPosicionDisplay is a cWebForm
-            Set piColumnSpan to 12
-            Set piColumnIndex to 0
-            Set peLabelPosition to lpTop
-            Set psLabel to "Posición asignada"
-            Set pbReadOnly to True
-        End_Object
     End_Object 
 
     Object oActionGroup is a cWebMenuGroup
@@ -162,35 +152,6 @@ Object oZoomJugador is a cWebView
             End_Procedure
 
         End_Object 
-
-        // Punto 4: Botón para seleccionar posición (navegación nfUndefined)
-        Object oPosicionBtn is a cWebMenuItem
-            Set psCSSClass to "WebIcon_List"
-            Set psCaption to "Seleccionar Posición"
-            Set peActionDisplay to adMenu
-
-            WebRegisterPath ntNavigateForwardCustom oSelectPosicion
-
-            Procedure OnClick
-                Send NavigatePath
-            End_Procedure
-
-            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-                // Marcamos como selección para que SelectPosicion cierre al elegir
-                Get NamedValueAdd NavigateData.NamedValues "SelectionMode" "Posicion" to NavigateData.NamedValues
-            End_Procedure
-
-            Procedure OnNavigateBack Handle hoCallback tWebNavigateData ByRef NavigateData
-                String sPosicionId sPosicionNombre
-
-                Get NamedValueGet NavigateData.NamedValues "PosicionID" to sPosicionId
-                Get NamedValueGet NavigateData.NamedValues "PosicionNombre" to sPosicionNombre
-
-                If (sPosicionNombre <> "") Begin
-                    WebSet psValue of oPosicionDisplay to sPosicionNombre
-                End
-            End_Procedure
-        End_Object
     End_Object 
 
     Procedure SetActionButtons

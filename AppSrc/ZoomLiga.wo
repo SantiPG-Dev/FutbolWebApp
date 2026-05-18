@@ -7,12 +7,8 @@ Use cWebPanel.pkg
 Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebForm.pkg
-Use cWebLabel.pkg
-Use cWebList.pkg
-Use cWebColumn.pkg
 
 Use cligaDataDictionary.dd
-Use cequipoDataDictionary.dd
 
 Object oZoomLiga is a cWebView
     Set piColumnCount to 12
@@ -25,10 +21,6 @@ Object oZoomLiga is a cWebView
 
     Object oliga_DD is a cligaDataDictionary
     End_Object 
-
-    Object oequipo_DD is a cequipoDataDictionary
-        Set DDO_Server To oliga_DD
-    End_Object
 
     Set Main_DD To oliga_DD
     Set Server  To oliga_DD
@@ -69,39 +61,6 @@ Object oZoomLiga is a cWebView
             Set peLabelPosition to lpTop
             Set psLabel to "Maximo de Equipos"
         End_Object 
-
-        // Equipos de esta liga (embebido, punto 3.2 de la tarea)
-        Object oEquiposLabel is a cWebLabel
-            Set psCaption to "Equipos de la liga"
-            Set piColumnSpan to 12
-            Set piColumnIndex to 0
-            Set psCSSClass to "WebSectionLabel"
-        End_Object
-
-        Object oEquiposList is a cWebList
-            Set piColumnSpan to 12
-            Set piColumnIndex to 0
-            Set pbServerOnRowClick to True
-            Set pbFillHeight to False
-            Set pbShowHeader to True
-            Set piHeight to 200
-
-            Object oequipoNombre is a cWebColumn
-                Entry_Item equipo.Nombre
-                Set psCaption to "Equipo"
-                Set piWidth to 600
-            End_Object
-
-            WebRegisterPath ntNavigateForward oZoomEquipo
-
-            Procedure OnRowClick String sRowId
-                Send NavigatePath
-            End_Procedure
-
-            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-                Move True to NavigateData.bReadOnly
-            End_Procedure
-        End_Object
     End_Object 
 
     Object oActionGroup is a cWebMenuGroup
@@ -146,24 +105,6 @@ Object oZoomLiga is a cWebView
             End_Procedure
 
         End_Object 
-
-        // Punto 3.1: Botón para navegar a los equipos de esta liga
-        Object oEquiposBtn is a cWebMenuItem
-            Set psCSSClass to "WebIcon_List"
-            Set psCaption to "Ver Equipos"
-            Set peActionDisplay to adMenu
-
-            WebRegisterPath ntNavigateForward oSelectEquipo
-
-            Procedure OnClick
-                Send NavigatePath
-            End_Procedure
-
-            Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-                Move False to NavigateData.bReadOnly
-                Move False to NavigateData.bNewRecord
-            End_Procedure
-        End_Object
     End_Object 
 
     Procedure SetActionButtons
