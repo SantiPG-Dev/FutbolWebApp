@@ -80,10 +80,30 @@ Object oSelectPosicion is a cWebView
                     Send NavigateClose Self
                     Case Break
 
-                Case Else // must be nfUndefined
-                    Send NavigateForward of oZoomPosicion Self
+        Case Else // must be nfUndefined
+                    // Punto 4: Si viene en modo selección, cerrar y devolver datos
+                    tWebNavigateData MyNavigateData
+                    Get GetNavigateData to MyNavigateData
+                    If (NamedValueIndex(MyNavigateData.NamedValues, "SelectionMode") > -1) Begin
+                        Send NavigateClose Self
+                    End
+                    Else Begin
+                        Send NavigateForward of oZoomPosicion Self
+                    End
 
             Case End
+        End_Procedure
+
+        Procedure OnGetNavigateBackData tWebNavigateData ByRef NavigateData Handle hoBackToView
+            String sRowId sNombre
+
+            WebGet psCurrentRowID to sRowId
+            If (sRowId <> "") Begin
+                Move posicion.Nombre to sNombre
+
+                Get NamedValueAdd NavigateData.NamedValues "PosicionID" sRowId to NavigateData.NamedValues
+                Get NamedValueAdd NavigateData.NamedValues "PosicionNombre" sNombre to NavigateData.NamedValues
+            End
         End_Procedure
 
         Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView

@@ -1,0 +1,6 @@
+ERROR: 4298 Comando no encontrado VERSION=25.0 ON LINE: 2 (1) OF FILE: C:\DataFlex Projects\FutbolWebApp\FutbolWebApp.sws
+ERROR: 4298 Comando no encontrado CONFIGFILE=.\PROGRAMS\CONFIG.WS ON LINE: 4 (1) OF FILE: C:\DataFlex Projects\FutbolWebApp\FutbolWebApp.sws
+ERROR: 4298 Comando no encontrado DEFAULTFORMHEIGHT=12 ON LINE: 6 (1) OF FILE: C:\DataFlex Projects\FutbolWebApp\FutbolWebApp.sws
+ERROR: 4298 Comando no encontrado PROJECT0=WEBAPP.SRC ON LINE: 8 (1) OF FILE: C:\DataFlex Projects\FutbolWebApp\FutbolWebApp.sws
+ERROR: 4298 Comando no encontrado IS$WEBAPP=|CZ1 ON LINE: 10 (1) OF FILE: C:\DataFlex Projects\FutbolWebApp\FutbolWebApp.sws
+ERROR: 4330 Se usó palabra reservada |CI1=|CZ1 ON LINE: 11 (1) OF FILE: C:\DataFlex Projects\FutbolWebApp\FutbolWebApp.sws
