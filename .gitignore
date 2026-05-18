@@ -1,1 +1,19 @@
+# DataFlex build artifacts
+Programs/*.exe
+Programs/*.dbg
+Programs/*.log
+Programs/*.dep
+*.prn
+*.dep
+FutbolWebApp.dbg
+FutbolWebApp.x64.*
+
+# IDE / Studio files
 IdeSrc/Workspace.loc
+IdeSrc/*.dsk
+IdeSrc/*.mtd
+IdeSrc/*.tty
+
+# OS
+Thumbs.db
+.DS_Store
