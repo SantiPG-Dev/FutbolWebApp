@@ -350,3 +350,33 @@ List of tables that experienced errors while converting:
 Finished conversion at 07/05/2026 16:38:17,8
 Total conversion time: 0:0:0:0,64
 ////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////
+Starting conversion at 25/05/2026 16:30:50,845
+////////////////////////////////////////////////////////////
+
+------------------------------------------------------------
+Converting Recnum table: 270, DFLastID, DFLastID
+Progress:Start time: 25/05/2026 16:30:50,847
+Start time: 25/05/2026 16:30:50,847
+Structure_Start
+Structure_Copy
+Set_Attribute DF_FILE_PRIMARY_INDEX to 0
+AssignMinimalLength
+RealignOverlaps
+Structure_End
+Progress:Creating new table.
+Creating new table.
+Progress:ERROR 12289: Error general HY000 (4028)--[MySQL][ODBC 9.7(w) Driver][mysqld-8.0.46]A table must have at least one visible column.  Table = DFLastID (0), Source = ODBC_DRV.Structure_End.CreateTable
+ERROR 12289: Error general HY000 (4028)--[MySQL][ODBC 9.7(w) Driver][mysqld-8.0.46]A table must have at least one visible column.  Table = DFLastID (0), Source = ODBC_DRV.Structure_End.CreateTable
+Progress:End time: 25/05/2026 16:30:50,853
+End time: 25/05/2026 16:30:50,853
+Progress:Total time to convert table: 0:0:0:0,006
+Total time to convert table: 0:0:0:0,006
+
+############################################################
+List of tables that experienced errors while converting:
+   DFLastID - Unable to create.
+////////////////////////////////////////////////////////////
+Finished conversion at 25/05/2026 16:30:50,855
+Total conversion time: 0:0:0:0,01
+////////////////////////////////////////////////////////////
