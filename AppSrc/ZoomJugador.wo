@@ -7,10 +7,12 @@ Use cWebPanel.pkg
 Use cWebMenuGroup.pkg
 Use cWebMenuItem.pkg
 Use cWebForm.pkg
+Use cWebCombo.pkg
 
 Use cligaDataDictionary.dd
 Use cequipoDataDictionary.dd
 Use cjugadorDataDictionary.dd
+Use cCodeMastDataDictionary.dd
 
 Object oZoomJugador is a cWebView
     Set piColumnCount to 12
@@ -30,6 +32,9 @@ Object oZoomJugador is a cWebView
 
     Object ojugador_DD is a cjugadorDataDictionary
         Set DDO_Server To oequipo_DD
+    End_Object 
+
+    Object oCodeMast_DD is a cCodeMastDataDictionary
     End_Object 
 
     Set Main_DD To ojugador_DD
@@ -56,12 +61,29 @@ Object oZoomJugador is a cWebView
             Set psLabel to "Apellido del jugador"
         End_Object 
 
-        Object ojugadorNacionalidad is a cWebForm
+        // Sustituí el cWebForm por un cWebCombo que carga las nacionalidades desde codemast por código
+        Object ojugadorNacionalidad is a cWebCombo
             Entry_Item jugador.Nacionalidad
             Set piColumnSpan to 8
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
             Set psLabel to "Nacionalidad"
+            Set pbAddEmptyItem to True
+            Set psEmptyItemDescription to "(Seleccionar)"
+
+            Procedure OnFill
+                String sCode sDescription
+
+                Clear CodeMast
+                Move "NACIONALIDAD" to CodeMast.Type
+                Repeat
+                    Find GE CodeMast by Index.1
+                    If (CodeMast.Type <> "NACIONALIDAD") Break
+                    Move (Trim(CodeMast.Code)) to sCode
+                    Move (Trim(CodeMast.Description)) to sDescription
+                    Send AddComboItem sCode sDescription
+                Loop
+            End_Procedure
         End_Object 
 
         Object oequipoNombre is a cWebForm
