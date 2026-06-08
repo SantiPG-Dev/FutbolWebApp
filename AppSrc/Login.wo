@@ -1,4 +1,8 @@
-﻿Use cWebView.pkg
+﻿// Vista de login - formulario de inicio de sesión
+// Se muestra al cargar la app si el usuario no está autenticado
+// Valida contra el SessionManager (tabla WebAppUser por defecto)
+
+Use cWebView.pkg
 Use cWebForm.pkg
 Use cWebButton.pkg
 Use cWebPanel.pkg
@@ -14,19 +18,24 @@ Object oLogin is a cWebView
     Set psCSSClass to "LoginView"
     Set pbServerOnSubmit to True
     
+    // El login reemplaza el estado en el historial para que no se pueda
+    // volver atrás a la pantalla de login después de autenticarse
     Set psStateViewName to "Login"
-    Set pbStateReplace to True  // Always replace the state so the login never becomes its own history item
+    Set pbStateReplace to True
     
+    // Guarda el hash del estado anterior para redirigir tras login
     { WebProperty=Server }
-    Property String psPrevStateHash ""  // Remember the state hash that the user navigated too so we can redirect after login
+    Property String psPrevStateHash ""
     
     Delegate Set phoLoginView to Self
     
+    // Espaciador superior para centrar verticalmente
     Object oTopSpacer is a cWebSpacer
         Set pbFillHeight to True
         Set piColumnSpan to 12
     End_Object
     
+    // Mensaje de error (oculto por defecto)
     Object oWarning is a cWebLabel
         Set pbVisible to False
         Set psCaption to "Invalid User ID or password. \n\rHint: 'admin' & 'admin'."
@@ -35,16 +44,17 @@ Object oLogin is a cWebView
         Set psCSSClass to "LoginWarning"
     End_Object
     
+    // Logo de DataFlex
     Object oLogo is a cWebImage
         Set piColumnSpan to 10
         Set psUrl to "images/DF_Logo_Retina.png"
         Set pePosition to wiFit
         Set piColumnIndex to 1
         Set piHeight to 160
-        
-        WebSetResponsive piHeight rmMobile to 100  // Best for small smart phones
+        WebSetResponsive piHeight rmMobile to 100
     End_Object
     
+    // Campo de usuario
     Object oLoginName is a cWebForm
         Set psLabel to "User ID:"
         Set peLabelPosition to lpTop
@@ -56,6 +66,7 @@ Object oLogin is a cWebView
         Set psAutoComplete to "username"
     End_Object
     
+    // Campo de contraseña (enmascarado con pbPassword)
     Object oPassword is a cWebForm
         Set psLabel to "Password:"
         Set pbPassword to True
@@ -74,13 +85,13 @@ Object oLogin is a cWebView
         Set piHeight to 10
     End_Object
     
+    // Botón de inicio de sesión
     Object oLoginButton is a cWebButton
         Set pbShowLabel to False
         Set psCaption to "sign in"
         Set pbServerOnClick to True
         Set piColumnSpan to 10
         Set piColumnIndex to 1
-        
         Procedure OnClick
             Send DoLogin
         End_Procedure
@@ -91,6 +102,7 @@ Object oLogin is a cWebView
         Set piColumnSpan to 12
     End_Object
     
+    // Lógica de autenticación
     Procedure DoLogin
         String sLoginName sPassword sPrevStateHash
         Boolean bResult
@@ -98,9 +110,11 @@ Object oLogin is a cWebView
         WebGet psValue of oLoginName to sLoginName
         WebGet psValue of oPassword to sPassword
         
+        // Valida contra el SessionManager
         Get UserLogin of ghoWebSessionManager sLoginName sPassword to bResult
         
         If (bResult) Begin
+            // Login correcto: oculta login, muestra header y navega al estado anterior
             Send Hide of oLogin
             Send ShowHeader of ghoWebApp
             WebSet psCSSClass of ghoWebApp to ""
@@ -108,42 +122,37 @@ Object oLogin is a cWebView
             WebGet psPrevStateHash to sPrevStateHash
             Send NavigateToStateHash of ghoWebApp sPrevStateHash True
             
-            // clear the login values. we don't want to return the login id & password as synchronized properties....
+            // Limpia los campos por seguridad
             WebSet psValue of oLoginName to ""
             WebSet psValue of oPassword  to ""
             WebSet pbVisible of oWarning to False
         End
         Else Begin
+            // Login fallido: muestra mensaje de error
             WebSet pbVisible of oWarning to True
         End
     End_Procedure
     
+    // También se dispara al pulsar Enter en el formulario
     Procedure OnSubmit
         Send DoLogin
     End_Procedure
     
+    // Al cargar la vista, guarda el estado anterior para poder redirigir después
     Procedure OnLoad
         String sPrevStateHash sView
-        
         Forward Send OnLoad
         
-        //  Store the current state so we can go back to that later (only if it points to a different view)
         Get StateHash of ghoWebApp to sPrevStateHash
         Send ParseViewStateHash sPrevStateHash (&sView)
         If (Lowercase(sView) <> Lowercase(psStateViewName(Self))) Begin
             WebSet psPrevStateHash to sPrevStateHash
         End
-        
     End_Procedure
     
+    // Antes de mostrar, oculta el header y pone fondo de login
     Procedure OnBeforeShow
-        //  Hide header & apply nice background style
         Send HideHeader to ghoWebApp
         WebSet psCSSClass of ghoWebApp to "LoginBackground"
     End_Procedure
-    
 End_Object
-
-
-
-

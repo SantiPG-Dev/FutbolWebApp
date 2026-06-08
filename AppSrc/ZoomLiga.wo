@@ -1,27 +1,9 @@
-// C:\DataFlex Projects\FutbolWebApp\AppSrc\ZoomLiga.wo
-// ZoomLiga
-// ============================================================================
-// DF9 - EJEMPLO DE NAVEGACIÓN: From Parent → Zoom Liga
-// ============================================================================
-// Esta vista (ZoomLiga) sirve como ejemplo de varios conceptos del DF9:
+﻿// ZoomLiga - detalle (CRUD) de liga
+// Campos: nombre, país, equipos actuales y máximo de equipos
+// Incluye botón "Ver Equipos" que navega a SelectEquipo constrainido por esta liga
 //
-//   InvokingView:   ZoomLiga (la vista actual)
-//   InvokingObject: oVerEquiposBtn (el botón que inicia la navegación)
-//   InvokedView:    oSelectEquipo (la vista destino)
-//   InvokedObject:  (ninguno en este caso)
-//   StackView:      oSelectEquipo se apila sobre ZoomLiga
-//
-//   Tipo: ntNavigateForward (navegación hacia adelante estándar)
-//   Constrain: Al navegar de padre (Liga) a hijo (Equipo), el DD de Equipo
-//              se constrain automáticamente por la Liga actual (nfFromParent)
-//              gracias a la relación Add_Server_File en cequipoDataDictionary.
-//
-// Eventos involucrados (orden):
-//   1. OnGetNavigateForwardData (oVerEquiposBtn) → prepara datos
-//   2. OnNavigateForward (oSelectEquipo) → recibe la navegación
-//   3. OnLoad (oSelectEquipo) → carga los datos constrainidos
-//   4. OnShow/OnBeforeShow (oSelectEquipo) → se muestra
-// ============================================================================
+// Ejemplo de navegación DF9: ntNavigateForward desde padre (Liga) a hijo (Equipo)
+// El DD de Equipo se constriñe automáticamente al registro actual de Liga
 
 Use cWebView.pkg
 Use cWebPanel.pkg
@@ -35,22 +17,18 @@ Object oZoomLiga is a cWebView
     Set piColumnCount to 12
     Set psCaption to "ZoomLiga"
     Set peWebViewStyle to wvsDrilldown
-    Set peViewType to vtZoom          // vtZoom: vista detalle (zoom)
+    Set peViewType to vtZoom
     Set pbShowCaption to False
     Set Verify_Save_Msg to 0
     Set piMaxWidth to 1024
 
-    // --- DataDictionary ---
-    // DD principal: liga (tabla padre en la relación Liga→Equipo)
-    // Equipo es Add_Client_File de liga, lo que permite constrain automático
+    // DDO simple, liga es tabla raíz
     Object oliga_DD is a cligaDataDictionary
-    End_Object 
-
+    End_Object
     Set Main_DD To oliga_DD
     Set Server  To oliga_DD
 
-
-    // --- Panel principal con campos de la liga ---
+    // Panel con los campos de la liga
     Object oWebMainPanel is a cWebPanel
         Set piColumnCount to 12
         WebSetResponsive piColumnCount rmMobile to 4
@@ -61,92 +39,55 @@ Object oZoomLiga is a cWebView
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
             Set psLabel to "Liga"
-        End_Object 
-
+        End_Object
         Object oligaPais is a cWebForm
             Entry_Item liga.Pais
             Set piColumnSpan to 8
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
             Set psLabel to "Pais"
-        End_Object 
-
+        End_Object
         Object oligaEquipos is a cWebForm
             Entry_Item liga.Equipos
             Set piColumnSpan to 2
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
             Set psLabel to "Equipos"
-        End_Object 
-
+        End_Object
         Object oligaEquiposMax is a cWebForm
             Entry_Item liga.EquiposMax
             Set piColumnSpan to 2
             Set piColumnIndex to 0
             Set peLabelPosition to lpTop
             Set psLabel to "Maximo de Equipos"
-        End_Object 
-    End_Object 
+        End_Object
+    End_Object
 
-    // --- Grupo de acciones (ActionGroup) ---
-    // Los ActionItems aparecen como botones en la cabecera de la vista
+    // Acciones: Ver Equipos, Save, Edit, Delete, Cancel Changes
     Object oActionGroup is a cWebMenuGroup
 
-        // ====================================================================
-        // TAREA DF9 1º: Botón en ZoomLiga que muestre los equipos de esa liga
-        // ====================================================================
-        // InvokingObject:  oVerEquiposBtn
-        // InvokedView:     oSelectEquipo (vista destino registrada con WebRegisterPath)
-        // Navigation type: ntNavigateForward (estándar hacia adelante)
-        //
-        // Al hacer clic:
-        //   1. Se dispara OnClick → Send NavigatePath
-        //   2. DataFlex dispara OnGetNavigateForwardData en este objeto
-        //      para preparar NavigateData (bReadOnly = False aquí)
-        //   3. DataFlex dispara OnNavigateForward en oSelectEquipo
-        //   4. Como la navegación desde ZoomLiga (parent) a SelectEquipo (child)
-        //      se considera nfFromParent, el DD de Equipo se constrain automáticamente
-        //      al registro actual de Liga (¡constrain automático por relación de DDs!)
-        // ====================================================================
+        // Botón "Ver Equipos": navega a SelectEquipo constrainido por la liga actual
+        // Al navegar desde ZoomLiga (padre) a SelectEquipo (hijo), el DD de Equipo
+        // se constriñe automáticamente al registro actual de Liga (nfFromParent)
         Object oVerEquiposBtn is a cWebMenuItem
             Set psCaption to "Ver Equipos"
             Set psCSSClass to "WebListMenuItem"
-
-            // WebRegisterPath asocia este objeto con la vista destino
-            // El segundo parámetro (oSelectEquipo) es el InvokedView
             WebRegisterPath ntNavigateForward oSelectEquipo
-
             Procedure OnClick
-                // Inicia la navegación. Internamente DataFlex:
-                // 1. Dispara OnGetNavigateForwardData en Self (InvokingObject)
-                // 2. Dispara OnNavigateForward en oSelectEquipo (InvokedView)
-                // 3. Apila la vista en el StackView (historial)
                 Send NavigatePath
             End_Procedure
-
-            // OnGetNavigateForwardData: evento que prepara los datos a pasar
-            // a la InvokedView. Se dispara en el InvokingObject.
-            // Parámetros:
-            //   NavigateData (ByRef): struct tWebNavigateData a rellenar
-            //   hoToView: handle de la vista destino (oSelectEquipo)
             Procedure OnGetNavigateForwardData tWebNavigateData ByRef NavigateData Handle hoToView
-                // bReadOnly = False: permitir edición en la vista destino
                 Move False to NavigateData.bReadOnly
             End_Procedure
         End_Object
 
-        // --- Botón Save (guardar) ---
         Object oSaveBtn is a cWebMenuItem
             Set psCSSClass to "WebSaveMenuItem"
             Set psCaption to "Save"
-
             Procedure OnClick
                 Send Request_Save
             End_Procedure
-
-        End_Object 
-
-        // --- Botón Edit (editar) ---
+        End_Object
         Object oEditBtn is a cWebMenuItem
             Set psCSSClass to "WebEditMenuItem"
             Set psCaption to "Edit"
@@ -154,22 +95,15 @@ Object oZoomLiga is a cWebView
                 Send ChangeEditMode True
                 Send SetActionButtons
             End_Procedure
-
-        End_Object 
-
-        // --- Botón Delete (eliminar) ---
+        End_Object
         Object oDeleteBtn is a cWebMenuItem
             Set psCSSClass to "WebDeleteMenuItem"
             Set psCaption to "Delete"
             Set peActionDisplay to adMenu
-
             Procedure OnClick
                 Send Request_Delete
             End_Procedure
-
-        End_Object 
-
-        // --- Botón Cancel Changes (deshacer cambios) ---
+        End_Object
         Object oCancelChangesBtn is a cWebMenuItem
             Set psCSSClass to "WebIcon_Refresh"
             Set psCaption to "Clear Changes"
@@ -177,92 +111,54 @@ Object oZoomLiga is a cWebView
             Procedure OnClick
                 Send RefreshRecord
             End_Procedure
+        End_Object
+    End_Object
 
-        End_Object 
-    End_Object 
-
-    // --- SetActionButtons: controla qué botones se muestran ---
-    // Se llama desde OnNavigateForward y desde OnClick del botón Edit
+    // Controla qué botones se muestran según modo lectura/edición
     Procedure SetActionButtons
         tWebNavigateData NavigateData
         Boolean bHasRecord
         Handle hoDD
-
         Get Server to hoDD
         Get GetNavigateData to NavigateData
         Get HasRecord of hoDD to bHasRecord
-
-        // Ocultar todos los botones primero
         WebSet pbRender of oEditBtn to False
         WebSet pbRender of oSaveBtn to False
         WebSet pbRender of oCancelChangesBtn to False
         WebSet pbRender of oDeleteBtn to False
-
-        // Si modo solo lectura: mostrar solo Edit
         If (NavigateData.bReadOnly) Begin
             WebSet pbRender of oEditBtn to True
         End
         Else Begin
-            // Si modo edición: mostrar Save, Cancel y Delete
             WebSet pbRender of oSaveBtn to True
             WebSet pbRender of oCancelChangesBtn to True
             WebSet pbRender of oDeleteBtn to bHasRecord
         End
     End_Procedure
 
-    // --- OnViewSaved: se dispara después de guardar ---
-    // Evento del ciclo de vida de la vista (DF9)
+    // Al guardar, cierra la vista y vuelve al listado
     Procedure OnViewSaved Handle hoServer Boolean bChanged
-        // Cerrar la vista después de guardar
         Send NavigateClose Self
     End_Procedure
-
-    // --- OnViewDeleted: se dispara después de eliminar ---
-    // Evento del ciclo de vida de la vista (DF9)
+    // Al eliminar, cierra la vista y vuelve al listado
     Procedure OnViewDeleted Handle hoDDO
         Send NavigateClose Self
     End_Procedure
 
-    // ========================================================================
-    // OnNavigateForward: evento principal de navegación
-    // ========================================================================
-    // Se dispara en la InvokedView cuando recibe una navegación.
-    // Parámetros (DF9):
-    //   NavigateData:   tWebNavigateData con info de la navegación
-    //   hoInvokingView: handle de la vista que inició la navegación
-    //   hoInvokingObject: handle del objeto que inició la navegación
-    //
-    // Tipos de navegación (DF9):
-    //   nfFromMain     → desde menú principal (hamburguesa)
-    //   nfFromParent   → desde vista padre (constrain automático)
-    //   nfFromChild    → desde vista hijo (lookup/zoom)
-    //   nfUndefined    → navegación directa sin contexto definido
-    // ========================================================================
+    // OnNavigateForward: recibe la navegación entrante
+    // hoInvokingView: vista que inició la navegación
+    // hoInvokingObject: objeto concreto que la inició
+    // Tipos: nfFromMain (menú), nfFromParent (constrain), nfFromChild (lookup)
     Procedure OnNavigateForward tWebNavigateData NavigateData Integer hoInvokingView Integer hoInvokingObject
         Case Begin
             Case (NavigateData.eNavigateType = nfFromMain)
-                // Navegación desde menú principal (ntNavigateBegin)
-                // InvokingView suele ser el menú (Dashboard)
                 Case Break
-
             Case (NavigateData.eNavigateType = nfFromParent)
-                // Navegación desde padre (Select → Zoom con constrain)
-                // Los DDs hijos se constrain automáticamente
-                // Ej: desde SelectEquipo → ZoomEquipo, Equipo viene constrainido
                 Case Break
-
             Case (NavigateData.eNavigateType = nfFromChild)
-                // Navegación desde hijo (Zoom → Select padre para lookup)
-                // Se usa cuando un Zoom necesita buscar un registro padre
-                // OnGetNavigateBackData devuelve el valor seleccionado
                 Case Break
-
-            Case Else // must be nfUndefined
-
+            Case Else
         Case End
-
         Send SetActionButtons
-
     End_Procedure
-
 End_Object

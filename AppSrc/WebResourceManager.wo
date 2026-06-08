@@ -1,3 +1,5 @@
+// Gestor de recursos web estático
+// Maneja la carga de JavaScript, CSS, imágenes y otros recursos del cliente
 Use cWebResourceManager.pkg
 
 Object oWebResourceManager is a cWebResourceManager

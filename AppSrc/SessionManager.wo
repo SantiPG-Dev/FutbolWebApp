@@ -1,6 +1,7 @@
+// Gestor de sesiones estándar de DataFlex WebApp
+// Maneja la autenticación de usuarios, sesiones HTTP y estado de login
+// Usa la tabla WebAppUser por defecto para validar credenciales
 Use cWebSessionManagerStandard.pkg
 
 Object oSessionManager is a cWebSessionManagerStandard
 End_Object
-
-

@@ -1,4 +1,8 @@
-﻿Use cWebView.pkg
+﻿// Dashboard - pantalla de inicio con mosaicos (tiles)
+// Cada tile navega a su vista de listado correspondiente
+// No lleva DDO porque es solo un menú visual, sin datos que cargar
+
+Use cWebView.pkg
 Use cWebPanel.pkg
 Use cWebForm.pkg
 Use cWebButton.pkg
@@ -13,22 +17,10 @@ Use cWebColumn.pkg
 
 Object oDashboard is a cWebView
 
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  
-    // Add a DDO Structure 
-    //
-    // There is no need to synchronize a DD structure on the client so we do
-    // not set the Server property or send ADDOStructure. We will simply use
-    // DDO's to mine data and generate HTML for our cWebHTMLBox objects.
-    // It is the HTML in these objects that is sent to the client each time 
-    // this page is shown.
-    //
-    // Also, it is important for the drill-down Navigation interface that we
-    // do not set the Server property to some DDO because this will affect 
-    // constraints in the next view that we navigate to.
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    // No se asigna Server/DDO aquí para no interferir con constraints
+    // de navegación al abrir otras vistas desde los tiles
 
     Set piMaxWidth to 1200
-    
     Set psCaption to "Dashboard"
     Set peViewType to vtUndefined
     Set pbShowCaption to False
@@ -37,100 +29,86 @@ Object oDashboard is a cWebView
     Object oWebMainPanel is a cWebPanel
         Set piColumnCount to 24
         
-        // - - - - - - - - - - - - - - -
-        // Main Panel's Responsive Rules
-        // - - - - - - - - - - - - - - -
+        // En móvil se apila en 1 columna, en tablet en 24
         WebSetResponsive piColumnCount rmMobile to 1
         WebSetResponsive piColumnCount rmTabletPortrait to 24
     
+        // Grupo con los 6 tiles principales
         Object oTiles_grp is a cWebGroup
             Set piColumnSpan to 8
             Set pbShowBorder to False
             Set pbShowCaption to False
             Set piColumnCount to 24
-            
             Set psCSSClass to "TilesGroup"
     
+            // Tile Entrenadores - navega a SelectEntrenador
             Object oTileEntrenador is a cWebHtmlBox
                 Set pbServerOnClick to True
                 Set piColumnSpan to 8
                 Set piColumnIndex to 0
                 Set psCSSClass to "Tile LightAlternate"
                 Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div class="Tile_Title">Entrenadores</div><div class="Tile_Subtitle">Abrir listado</div></div>'
-                                
                 WebRegisterPath ntNavigateForwardCustom oSelectEntrenador
-                
                 Procedure OnClick String sId String sParam
                     Send NavigatePath
                 End_Procedure
-                
             End_Object
     
+            // Tile Jugadores - navega a SelectJugador
             Object oTileJugador is a cWebHtmlBox
                 Set pbServerOnClick to True
                 Set piColumnSpan to 8
                 Set piColumnIndex to 8
                 Set psCSSClass to "Tile Dark"
                 Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div class="Tile_Title">Jugadores</div><div class="Tile_Subtitle">Abrir listado</div></div>'
-    
                 WebRegisterPath ntNavigateForwardCustom oSelectJugador
-                
                 Procedure OnClick String sId String sParam
                     Send NavigatePath
                 End_Procedure
-                
             End_Object
     
+            // Tile Posiciones - navega a SelectPosicion
             Object oTilePosicion is a cWebHtmlBox
                 Set pbServerOnClick to True
                 Set piColumnSpan to 8
                 Set piColumnIndex to 16
                 Set psCSSClass to "Tile DarkAlternate"
                 Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div class="Tile_Title">Posiciones</div><div class="Tile_Subtitle">Abrir listado</div></div>'
-            
                 WebRegisterPath ntNavigateForwardCustom oSelectPosicion
-                
                 Procedure OnClick String sId String sParam
                     Send NavigatePath
                 End_Procedure
-                
             End_Object
 
+            // Tile Equipos - navega a SelectEquipo
             Object oTileEquipo is a cWebHtmlBox
                 Set pbServerOnClick to True
                 Set piColumnSpan to 12
                 Set piColumnIndex to 0
                 Set psCSSClass to "Tile Light"
                 Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div class="Tile_Title">Equipos</div><div class="Tile_Subtitle">Abrir listado</div></div>'
-            
                 WebRegisterPath ntNavigateForwardCustom oSelectEquipo
-                
                 Procedure OnClick String sId String sParam
                     Send NavigatePath
                 End_Procedure
-                
             End_Object
 
+            // Tile Ligas - navega a SelectLiga
             Object oTileLiga is a cWebHtmlBox
                 Set pbServerOnClick to True
                 Set piColumnSpan to 12
                 Set piColumnIndex to 12
                 Set psCSSClass to "Tile LightAlternate"
                 Set psHtml to '<div class="WebCon_Sizer" data-ServerOnClick="openview"><div class="Tile_Title">Ligas</div><div class="Tile_Subtitle">Abrir listado</div></div>'
-            
                 WebRegisterPath ntNavigateForwardCustom oSelectLiga
-                
                 Procedure OnClick String sId String sParam
                     Send NavigatePath
                 End_Procedure
-                
             End_Object
         End_Object
-    
     End_Object
     
     Procedure OnBeforeShow
-        // Each time this view is shown we will update the appropriate information.
+        // Aquí se podría actualizar información del dashboard cada vez que se muestra
     End_Procedure
-
 End_Object

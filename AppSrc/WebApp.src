@@ -1,26 +1,32 @@
-﻿Use AllWebAppClasses.pkg
+﻿// Punto de entrada principal de la WebApp
+// Aquí se configura la aplicación, los menús y se registran todas las vistas
+
+Use AllWebAppClasses.pkg
 Use cConnection.pkg
 Use cWebMenuItem.pkg
 
+// Objeto de aplicación con conexión encriptada
 Object oApplication is a cApplication
     Object oConnection is a cConnection
         Use LoginEncryption.pkg
     End_Object
 End_Object
 
+// WebApp principal - tema, estilo drill-down y clave de encriptación de sesión
 Object oWebApp is a cWebApp
     Set psTheme to "MyCustomTheme"
     Set peAlignView to alignCenter
     
-    // It is important to set this so that all views will default
-    // to drill down style views.
+    // Todas las vistas usan drill-down por defecto
     Set peApplicationStyle to wvsDrillDown   
     Set peApplicationStateMode to asmHistoryAndUrls 
     Set psEncryptPassword to "-<]=U95{}tzJLiEi3[K[y##LM@{}M1CM<?1zcj}M"
 
+    // Stack de vistas - maneja el historial de navegación
     Object oViewStack is a cWebViewStack
     End_Object
     
+    // Procedimientos para mostrar/ocultar la cabecera
     Procedure HideHeader
         WebSet pbRender of oHeaderPanel to False
     End_Procedure
@@ -29,35 +35,36 @@ Object oWebApp is a cWebApp
         WebSet pbRender of oHeaderPanel to True 
     End_Procedure
 
+    // Panel superior: menú hamburguesa, breadcrumb y acciones
     Object oHeaderPanel is a cWebPanel
         Set peRegion to prTop
         Set psCSSClass to "HeaderPanel"
         
+        // Panel izquierdo: botón de menú y botón de retroceso
         Object oMenuPanel is a cWebPanel
             Set peRegion to prLeft
             Set piWidth to 50
             
+            // Botón hamburguesa con todas las opciones de navegación
             Object oMenuButton is a cWebMenuButton
                 Set piMenuHeight to 500
 
+                // Menú Dashboard - pantalla de inicio
                 Object oDashboard_itm is a cWebMenuItem
                     Set psCaption to C_$Dashboard
-                    
                     WebRegisterPath ntNavigateBegin oDashboard
-
                     Procedure OnClick
                         Send NavigatePath
                     End_Procedure
                 End_Object
 
+                // Submenú con todas las vistas de listado
                 Object oViewMenu is a cWebMenuItem
                     Set psCaption to C_$View
 
                     Object oSelectEntrenadorItem1 is a cWebMenuItem
                         Set psCaption to "SelectEntrenador"
-
                         WebRegisterPath ntNavigateBegin oSelectEntrenador
-
                         Procedure OnClick
                             Forward Send OnClick
                                 Send NavigatePath
@@ -66,9 +73,7 @@ Object oWebApp is a cWebApp
 
                     Object oSelectJugadorItem1 is a cWebMenuItem
                         Set psCaption to "SelectJugador"
-
                         WebRegisterPath ntNavigateBegin oSelectJugador
-
                         Procedure OnClick
                             Forward Send OnClick
                                 Send NavigatePath
@@ -77,9 +82,7 @@ Object oWebApp is a cWebApp
 
                     Object oSelectPosicionItem1 is a cWebMenuItem
                         Set psCaption to "SelectPosicion"
-
                         WebRegisterPath ntNavigateBegin oSelectPosicion
-
                         Procedure OnClick
                             Forward Send OnClick
                                 Send NavigatePath
@@ -88,9 +91,7 @@ Object oWebApp is a cWebApp
 
                     Object oSelectEquipoItem1 is a cWebMenuItem
                         Set psCaption to "SelectEquipo"
-
                         WebRegisterPath ntNavigateBegin oSelectEquipo
-
                         Procedure OnClick
                             Forward Send OnClick
                                 Send NavigatePath
@@ -99,9 +100,7 @@ Object oWebApp is a cWebApp
 
                     Object oSelectLigaItem1 is a cWebMenuItem
                         Set psCaption to "SelectLiga"
-
                         WebRegisterPath ntNavigateBegin oSelectLiga
-
                         Procedure OnClick
                             Forward Send OnClick
                                 Send NavigatePath
@@ -109,22 +108,21 @@ Object oWebApp is a cWebApp
                     End_Object
                 End_Object
 
+                // Cerrar sesión
                 Object oSignOut_itm is a cWebMenuItem
                     Set psCaption to C_$LogOut
-
                     Procedure OnClick
                         Send RequestLogOut of ghoWebSessionManager
                     End_Procedure
                 End_Object
             End_Object  
 
+            // Botón de retroceso (solo visible en móvil cuando hay vistas apiladas)
             Object oBackButton is a cWebButton
                 Set psCSSClass to "WebBack_Icon"
                 Set pbRender to False
-                
                 Procedure OnClick
                     Handle hoTop
-                    
                     Get TopViewHandle of oViewStack to hoTop
                     If (hoTop > 0) Begin
                         Send NavigateCancel of hoTop 
@@ -132,6 +130,7 @@ Object oWebApp is a cWebApp
                 End_Procedure
             End_Object
             
+            // Suscripción al ViewStack para saber cuándo mostrar/ocultar el botón back
             Send AddClient of oViewStack Self
                 
             Procedure OnUpdateViewStack
@@ -140,49 +139,47 @@ Object oWebApp is a cWebApp
                 Boolean bTop
                 
                 WebGet peMode of (Owner(Self)) to eMode
-                
                 Get TopViewHandle of oViewStack to hoTop
                 Get GetDefaultView to hoDflt
                 Move (hoTop=0 or hoTop=hoDflt) to bTop
                 
+                // En móvil se oculta el menú y se muestra la flecha de retroceso
                 WebSet pbRender of oBackButton to (not(bTop) and eMode >= rmMobile)
                 WebSet pbRender of oMenuButton to True
             End_Procedure
-
         End_Object
 
+        // Panel central con breadcrumb (título de la vista actual)
         Object oCaptionPanel is a cWebPanel
             Set piColumnCount to 12
-
             Object oCaptionBreadcrumb is a cWebBreadcrumb
                 Set peBreadcrumbStyle to crumbCaption
                 WebSetResponsive peBreadcrumbStyle rmMobile to crumbDropDown
             End_Object         
         End_Object
         
+        // Panel derecho con botones de acción (Save, Edit, Delete, etc.)
         Object oActionPanel is a cWebPanel
             Set peRegion to prRight
             Set piColumnCount to 1
             Set piWidth to 120
-
             Object oMainActions is a cWebActionBar
                 Set psGroupName to "MainActions"
-
                 Set piColumnSpan to 0
                 Set peAlign to alignRight
             End_Object
         End_Object
 
+        // Breadcrumb horizontal (migas de pan) debajo del header
         Object oBreadcrumbPanel is a cWebPanel
             Set peRegion to prBottom
-            
             Object oHorizontalBreadcrumb is a cWebBreadcrumb
                 WebSetResponsive pbRender rmMobile to False
             End_Object         
         End_Object
-
     End_Object    
 
+    // Inclusión de todas las vistas de la aplicación
     Use SessionManager.wo
     Use Login.wo
     Use WebResourceManager.wo
@@ -198,8 +195,10 @@ Object oWebApp is a cWebApp
     Use ZoomEquipo.wo
     Use SelectLiga.wo
     Use ZoomLiga.wo
+    
+    // Vista por defecto al cargar la aplicación
     Set phoDefaultView to oDashboard
-
 End_Object
 
+// Arranque de la aplicación
 Send StartWebApp of oWebApp
