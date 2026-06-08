@@ -1,3 +1,7 @@
+﻿// LoginDialog - diálogo modal de inicio de sesión
+// Versión alternativa al login en página completa (Login.wo)
+// Se muestra como ventana emergente modal
+
 Use cWebModalDialog.pkg
 Use cWebForm.pkg
 Use cWebButton.pkg
@@ -13,31 +17,31 @@ Object oLoginDialog is a cWebModalDialog
     
     Delegate Set phoLoginView to Self
     
+    // Panel superior: descripción
     Object oTopPanel is a cWebPanel
         Set peRegion to prTop
         Set piHeight to 55       
-        
         Object oDescription is a cWebLabel
             Set psCaption to "Please enter your username and password to login."
             Set peAlign to alignCenter
         End_Object
     End_Object
     
+    // Margen derecho
     Object oRightPanel is a cWebPanel
         Set peRegion to prRight
         Set piWidth to 20       
     End_Object
     
+    // Panel central: formulario (usuario y contraseña)
     Object oMainPanel is a cWebPanel
         Set peRegion to prCenter
-        
         Object oLoginName is a cWebForm
             Set psLabel to "Login Name:"
             Set peLabelAlign to alignRight
             Set piMaxLength to 20
             Set psAutoComplete to "username"
         End_Object
-        
         Object oPassword is a cWebForm
             Set psLabel to "Password:"
             Set pbPassword to True
@@ -45,7 +49,7 @@ Object oLoginDialog is a cWebModalDialog
             Set piMaxLength to 20
             Set psAutoComplete to "current-password"
         End_Object   
-        
+        // Mensaje de error (oculto por defecto)
         Object oWarning is a cWebLabel
             Set pbVisible to False
             Set psCaption to "Invalid loginname or password."
@@ -54,25 +58,23 @@ Object oLoginDialog is a cWebModalDialog
         End_Object
     End_Object
     
+    // Panel inferior: botón de Login
     Object oButtonPanel is a cWebPanel
         Set peRegion to prBottom
         Set piColumnCount to 3
         Set piMinHeight to 40
-
         Object oLoginButton is a cWebButton
             Set pbShowLabel to False
             Set piColumnIndex to 2
             Set psCaption to "Login"
             Set pbServerOnClick to True
-                        
             Procedure OnClick
                 Send DoLogin
             End_Procedure
-            
         End_Object
-        
     End_Object
     
+    // Lógica de autenticación
     Procedure DoLogin
         String sLoginName sPassword
         Boolean bResult
@@ -84,23 +86,24 @@ Object oLoginDialog is a cWebModalDialog
         Get UserLogin of ghoWebSessionManager sLoginName sPassword to bResult
         
         If (bResult) Begin
+            // Login correcto: oculta diálogo y muestra vista por defecto
             Send Hide of oLoginDialog
             Get GetDefaultView to hoDefaultView
             If (hoDefaultView > 0) Begin
                 Send Show of hoDefaultView
             End
-            
-            // clear the login values. we don't want to return the login id & password as synchronized properties....
+            // Limpia campos por seguridad
             WebSet psValue of oLoginName to ""
             WebSet psValue of oPassword  to ""
             WebSet pbVisible of oWarning to False
         End
         Else Begin
+            // Login fallido: muestra mensaje de error
             WebSet pbVisible of oWarning to True
         End
     End_Procedure
     
-    
+    // También se dispara al pulsar Enter
     Set pbServerOnSubmit to True
     Procedure OnSubmit
          Send DoLogin
